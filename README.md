@@ -12,6 +12,7 @@ For all three datasets, the following Matlab scripts are provided:
 3. Scripts performing classification in leaky- and leakage-free implementations
 
 In addition, Matlab workspaces storing ground truth, predicted label and probability score values from the performed evaluations are also provided, which can be used for the reproduction of all results reported in the study.
+
 **Notes:**
 - Most scripts require the EEGLAB Toolbox ([Delorme & Makeig, 2004](https://www.sciencedirect.com/science/article/abs/pii/S0165027003003479?casa_token=THNwh9oC20AAAAAA:U0xOJ5c9TUF6Aws36j2sdDQ9f9n3Pv6K8EEgFwLSSlt2RipIDDGY1gGObrahpyGgMtSRjmLxHVeq)) with necessary plug-ins to be added to the matlab path.
 - The raw text files of the MSU dataset were already converted to matrices of size 7680*16, and stored as matlab workspaces (expected input for pre-processing script).
