@@ -10,6 +10,7 @@ For all three datasets, the following Matlab scripts are provided:
 1. Pre-processing of raw EEG data
 2. Feature extraction for CNN- and ML-based classification pipelines
 3. Scripts performing classification in leaky- and leakage-free implementations
+4. A script that loads all the exported classification output workspaces and prints out the results
 
 In addition, Matlab workspaces storing ground truth, predicted label and probability score values from the performed evaluations are also provided, which can be used for the reproduction of all results reported in the study.
 
