@@ -1,8 +1,10 @@
 % Author: F. Samuel Racz, 2025, The University of Texas at Austin
 % email: fsr324@austin.utexas.edu
 
+addpath(genpath('functions'))
 fnames = dir('Dataset2_ML_features/*.mat');
 ns = length(fnames);
+rng(42, 'twister') % for reproducibility
 
 %% load data
 for subj = 1:ns
@@ -68,7 +70,7 @@ feat_leaky = X_red.Properties.VariableNames;
 % evaluate extensive LOSO-CV performance
 Yp_leaky = cell(Ncv,1);
 Yt_leaky = cell(Ncv,1);
-scores_leaky = cell(Ncv,1);
+Sc_leaky = cell(Ncv,1);
 acc_leaky = zeros(Ncv,1);
 
 tic
@@ -85,6 +87,7 @@ for cv = 1:Ncv
 
     % train model
     mdl = fitcsvm(X_train,y_train,'Standardize',false,'KernelFunction','RBF','KernelScale','auto');
+    mdl.ScoreTransform = 'logit';
 
     % predict
     [y_pred, scores] = predict(mdl,X_val);
@@ -92,7 +95,7 @@ for cv = 1:Ncv
     % store outcome
     Yp_leaky{cv} = y_pred;
     Yt_leaky{cv} = y_val;
-    scores_leaky{cv} = scores;
+    Sc_leaky{cv} = scores;
     acc_leaky(cv) = mean(y_pred == y_val);
 
     % display progress
@@ -109,7 +112,7 @@ end
 
 Yp_subj = cell(Ncv,1);
 Yt_subj = cell(Ncv,1);
-scores_subj = cell(Ncv,1);
+Sc_subj = cell(Ncv,1);
 feat_subj = cell(Ncv,k_top);
 acc_subj = zeros(Ncv,1);
 tic
@@ -167,6 +170,7 @@ for cv = 1:Ncv
 
     % train model
     mdl = fitcsvm(X_train,y_train,'Standardize',false,'KernelFunction','RBF','KernelScale','auto');
+    mdl.ScoreTransform = 'logit';
 
     % predict
     [y_pred, scores] = predict(mdl,X_val);
@@ -174,7 +178,7 @@ for cv = 1:Ncv
     % store outcome
     Yp_subj{cv} = y_pred;
     Yt_subj{cv} = y_val;
-    scores_subj{cv} = scores;
+    Sc_subj{cv} = scores;
     feat_subj(cv,:) = feat_topk';
     acc_subj(cv) = mean(y_pred == y_val);
 
@@ -187,4 +191,16 @@ for cv = 1:Ncv
     end
 end
 
+%% save performance
 
+perf_leaky = struct(...
+    'Yt', Yt_leaky,...
+    'Yp', Yp_leaky,...
+    'Sc', Sc_leaky);
+
+perf_subj = struct(...
+    'Yt', Yt_subj,...
+    'Yp', Yp_subj,...
+    'Sc', Sc_subj);
+
+save('ws_perf_ML_dataset2.mat','perf_leaky','perf_subj')
