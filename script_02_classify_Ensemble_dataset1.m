@@ -1,8 +1,10 @@
 % Author: F. Samuel Racz, 2025, The University of Texas at Austin
 % email: fsr324@austin.utexas.edu
 
+addpath(genpath('functions'))
 fnames = dir('Dataset1_ML_features/*.mat');
 ns = length(fnames);
+rng(42, 'twister') % for reproducibility
 
 %% load data
 for subj = 1:ns
@@ -78,6 +80,7 @@ for fold = 1:K
 
     % train model
     mdlFold = fitensemble(X_train,y_train,method,numlearningcycles,t,'LearnRate',learnrate);
+    mdlFold.ScoreTransform = 'logit';
 
     % predict
     [y_pred, scores] = predict(mdlFold, X_val);
@@ -159,6 +162,7 @@ for fold = 1:K
     X_val = X_val_z;
 
     mdlFold = fitensemble(X_train,y_train,method,numlearningcycles,t,'LearnRate',learnrate);
+    mdlFold.ScoreTransform = 'logit';
 
     [y_pred, scores] = predict(mdlFold, X_val);
 
@@ -209,6 +213,7 @@ for fold = 1:K
 
     % train model
     mdlFold = fitensemble(X_train,y_train,method,numlearningcycles,t,'LearnRate',learnrate);
+    mdlFold.ScoreTransform = 'logit';
 
     % predict
     [y_pred, scores] = predict(mdlFold, X_val);
@@ -292,6 +297,7 @@ for fold = 1:K
     X_val = X_val_z;
 
     mdlFold = fitensemble(X_train,y_train,method,numlearningcycles,t,'LearnRate',learnrate);
+    mdlFold.ScoreTransform = 'logit';
 
     [y_pred, scores] = predict(mdlFold, X_val);
 
@@ -303,3 +309,27 @@ for fold = 1:K
 
     disp(['Leakage-free CV: fold ' num2str(fold) ' done in ' num2str(toc,'%.2f') 's.'])
 end
+
+%% save performance
+
+perf_leaky_full = struct(...
+    'Yt', Yt_leaky_full,...
+    'Yp', Yp_leaky_full,...
+    'Sc', Sc_leaky_full);
+
+perf_leaky_ablFS = struct(...
+    'Yt', Yt_leaky_ablFS,...
+    'Yp', Yp_leaky_ablFS,...
+    'Sc', Sc_leaky_ablFS);
+
+perf_leaky_ablTT = struct(...
+    'Yt', Yt_leaky_ablTT,...
+    'Yp', Yp_leaky_ablTT,...
+    'Sc', Sc_leaky_ablTT);
+
+perf_subj = struct(...
+    'Yt', Yt_subj,...
+    'Yp', Yp_subj,...
+    'Sc', Sc_subj);
+
+save('ws_perf_Ensemble_dataset1.mat','perf_leaky_full','perf_leaky_ablFS','perf_leaky_ablTT','perf_subj')

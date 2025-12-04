@@ -1,8 +1,10 @@
 % Author: F. Samuel Racz, 2025, The University of Texas at Austin
 % email: fsr324@austin.utexas.edu
 
+addpath(genpath('functions'))
 fnames = dir('Dataset3_ML_features/*.mat');
 ns = length(fnames);
+rng(42, 'twister') % for reproducibility
 
 %% load data
 for subj = 1:ns
@@ -308,7 +310,7 @@ for fold = 1:K
     disp(['Leakage-free CV: fold ' num2str(fold) ' done in ' num2str(toc,'%.2f') 's.'])
 end
 
-%% saving results
+%% save performance
 
 perf_leaky_full = struct(...
     'Yt', Yt_leaky_full,...
@@ -330,4 +332,4 @@ perf_subj = struct(...
     'Yp', Yp_subj,...
     'Sc', Sc_subj);
 
-save('ws_perf_DL_dataset3.mat','perf_leaky_full','perf_leaky_ablFS','perf_leaky_ablTT','perf_subj')
+save('ws_perf_Ensemble_dataset3.mat','perf_leaky_full','perf_leaky_ablFS','perf_leaky_ablTT','perf_subj')
