@@ -89,7 +89,7 @@ for b = 1:Nb
     end
 end
 
-T = 2*60;
+T = 12*60;
 Nt = floor(T/TE);
 
 vnames = [vnames_BLP_mean; vnames_BLP_var; vnames_Hjorth; vnames_DFA; vnames_PE; vnames_PLI];
